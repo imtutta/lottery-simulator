@@ -27,32 +27,62 @@ public class LotteryManager : MonoBehaviour {
 	public List<int> extractedNumbers;
 	#endregion
 
+	#region Protected Fields
+	public bool loadFlag = false;
+	#endregion
+
 	#region Unity Callbacks
 	void Awake ()
 	{
+		numbersList = new List<int>();
 		extractedNumbers = new List<int>();
 	}
 
 	IEnumerator Start ()
 	{
+		StartCoroutine (LoadData ());
+		while (!loadFlag)
+			yield return new WaitForEndOfFrame();
+		
+		BuildData ();
+	}
+	#endregion
+
+	#region Coroutines
+	IEnumerator LoadData()
+	{
 		var path = System.IO.Path.Combine ("file://" + Application.streamingAssetsPath, fileName);
 		WWW www = new WWW (path);
 		yield return www;
-
 		mdo = JsonUtility.FromJson<MasterDataObject> (www.text);
-		BuildNumberList (mdo, ref numbersList);
-	}
-
-	void Update ()
-	{
-	
+		loadFlag = true;
 	}
 	#endregion
 
 	#region External functions
-	protected int ExtractNumber()
+	public bool ExtractNumber()
 	{
-		return 0;
+		if (numbersList.Count == 0)
+			return false;
+		int randomIndex = Random.Range (0, 1000000) % numbersList.Count;
+		extractedNumbers.Add (numbersList[randomIndex]);
+		numbersList.RemoveAt (randomIndex);
+		return true;
+	}
+
+	public void LoadDataCoroutine()
+	{
+		StartCoroutine (LoadData ());
+	}
+
+	public void BuildData()
+	{
+		BuildNumberList (mdo, ref numbersList);
+	}
+
+	public void CleanData()
+	{
+		Awake ();
 	}
 	#endregion
 

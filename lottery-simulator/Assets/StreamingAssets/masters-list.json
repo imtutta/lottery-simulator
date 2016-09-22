@@ -2,15 +2,7 @@
 	"list":[
 	{
 		"start": 1,
-		"end": 21,
+		"end": 3,
 		"owner": "Cristina"
-	},{
-		"start": 45,
-		"end": 53,
-		"owner": "Beatrice"
-	},{
-		"start": 106,
-		"end": 234,
-		"owner": "Bonni"
 	}]
 }
